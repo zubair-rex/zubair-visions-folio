@@ -7,11 +7,11 @@ const HeroBlob = lazy(() => import("./HeroBlob").then((m) => ({ default: m.HeroB
 
 const ease = [0.16, 1, 0.3, 1] as const;
 const fadeUp = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 14 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease, delay: 0.15 + i * 0.1 },
+    transition: { duration: 0.7, ease, delay: 0.15 + i * 0.12 },
   }),
 };
 
@@ -35,6 +35,8 @@ export function Hero() {
       tx = e.clientX - r.left;
       ty = e.clientY - r.top;
     };
+    const onEnter = () => (glow.style.opacity = "1");
+    const onLeave = () => (glow.style.opacity = "0");
     const tick = () => {
       cx += (tx - cx) * 0.12;
       cy += (ty - cy) * 0.12;
@@ -42,9 +44,13 @@ export function Hero() {
       raf = requestAnimationFrame(tick);
     };
     el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseenter", onEnter);
+    el.addEventListener("mouseleave", onLeave);
     raf = requestAnimationFrame(tick);
     return () => {
       el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseenter", onEnter);
+      el.removeEventListener("mouseleave", onLeave);
       cancelAnimationFrame(raf);
     };
   }, [low]);
@@ -63,18 +69,16 @@ export function Hero() {
       id="hero"
       className="relative min-h-screen w-full overflow-hidden flex items-center"
     >
-      {/* Background scene */}
+      {/* 3D scene */}
       <div className="absolute inset-0 -z-10">
         {low ? (
-          <div className="absolute inset-0">
-            <div
-              className="absolute inset-0 opacity-80"
-              style={{
-                background:
-                  "radial-gradient(60% 50% at 70% 40%, rgba(124,92,255,0.35) 0%, rgba(124,92,255,0.05) 50%, transparent 75%), radial-gradient(40% 40% at 30% 70%, rgba(124,92,255,0.18) 0%, transparent 70%)",
-              }}
-            />
-          </div>
+          <div
+            className="absolute inset-0 opacity-90"
+            style={{
+              background:
+                "radial-gradient(55% 45% at 50% 45%, rgba(124,92,255,0.42) 0%, rgba(124,92,255,0.08) 50%, transparent 75%)",
+            }}
+          />
         ) : (
           mounted && (
             <Suspense fallback={null}>
@@ -97,32 +101,33 @@ export function Hero() {
         <div
           ref={glowRef}
           aria-hidden
-          className="pointer-events-none absolute top-0 left-0 w-[600px] h-[600px] rounded-full -z-[5]"
+          className="pointer-events-none absolute top-0 left-0 w-[600px] h-[600px] rounded-full -z-[5] opacity-0 transition-opacity duration-500 ease-sig"
           style={{
             background:
-              "radial-gradient(circle, rgba(124,92,255,0.18) 0%, rgba(124,92,255,0) 60%)",
+              "radial-gradient(circle, rgba(124,92,255,0.22) 0%, rgba(124,92,255,0) 60%)",
             filter: "blur(20px)",
           }}
         />
       )}
 
-      <div className="relative mx-auto max-w-[1440px] w-full px-6 md:px-12 py-32">
-        <motion.p
+      <div className="relative mx-auto max-w-[1440px] w-full px-6 md:px-12 py-32 text-center">
+        <motion.div
           custom={0}
           initial="hidden"
           animate="show"
           variants={fadeUp}
-          className="label-eyebrow text-muted-foreground mb-8"
+          className="inline-flex items-center gap-2 mb-8"
         >
-          Portfolio — 2026
-        </motion.p>
+          <span className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_12px_var(--accent)]" />
+          <span className="label-eyebrow text-accent">Built in code, not templates</span>
+        </motion.div>
         <motion.h1
           custom={1}
           initial="hidden"
           animate="show"
           variants={fadeUp}
-          className="headline text-foreground"
-          style={{ fontSize: "clamp(48px, 8vw, 96px)" }}
+          className="headline text-foreground mx-auto max-w-5xl"
+          style={{ fontSize: "clamp(48px, 9vw, 104px)" }}
         >
           Zubair <span className="accent-word">Ahmed</span>
         </motion.h1>
@@ -131,26 +136,42 @@ export function Hero() {
           initial="hidden"
           animate="show"
           variants={fadeUp}
-          className="mt-6 max-w-xl text-muted-foreground text-base md:text-lg leading-relaxed"
+          className="mt-8 mx-auto max-w-xl text-muted-foreground text-base md:text-lg leading-relaxed"
         >
-          I design and build websites people stop scrolling for.
+          Most websites get scrolled past. I design and build the ones people screenshot.
         </motion.p>
         <motion.div
           custom={3}
           initial="hidden"
           animate="show"
           variants={fadeUp}
-          className="mt-12"
+          className="mt-12 flex flex-wrap items-center justify-center gap-4"
         >
           <button
             onClick={scrollToWork}
-            className="group relative inline-flex items-center gap-3 rounded-[10px] border border-border bg-surface/60 backdrop-blur-sm px-6 py-3.5 text-sm font-medium text-foreground hover:border-accent/50 hover:bg-surface transition-all duration-300 ease-sig"
+            className="group relative inline-flex items-center gap-3 rounded-full px-7 py-3.5 text-[13px] font-medium font-mono-ui uppercase tracking-[0.12em] text-foreground overflow-hidden transition-all duration-300 ease-sig hover:-translate-y-0.5"
+            style={{
+              background: "linear-gradient(135deg, #7C5CFF, #A78BFA)",
+              boxShadow: "0 0 40px rgba(124,92,255,0.35)",
+            }}
           >
-            <span>View my work</span>
-            <span className="text-accent transition-transform duration-300 ease-sig group-hover:translate-x-1">
-              →
-            </span>
+            <span className="relative z-10">View my work</span>
+            <span className="relative z-10 transition-transform duration-300 ease-sig group-hover:translate-x-1">→</span>
           </button>
+          <a
+            href="#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              const el = document.getElementById("contact");
+              if (!el) return;
+              const lenis = getLenis();
+              if (lenis) lenis.scrollTo(el, { offset: -40 });
+              else el.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="inline-flex items-center gap-3 rounded-full glass px-7 py-3.5 text-[13px] font-medium font-mono-ui uppercase tracking-[0.12em] text-foreground hover:border-accent/60 transition-all duration-300 ease-sig"
+          >
+            Start a project
+          </a>
         </motion.div>
       </div>
 
