@@ -46,7 +46,7 @@ export function LiveWorkCard({ name, url, index }: Props) {
       {inView && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <iframe
-            src={https://zubair-ahmed.lovable.app/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&utm_id=97760_v0_s00_e0_tv3}
+            src="https://zubair-ahmed.lovable.app/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&utm_id=97760_v0_s00_e0_tv3"
             title={name}
             loading="lazy"
             onLoad={() => setLoaded(true)}
