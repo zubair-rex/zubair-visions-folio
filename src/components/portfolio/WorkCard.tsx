@@ -58,7 +58,7 @@ export function LiveWorkCard({ name, url, index }: Props) {
               transform: "scale(var(--scale))",
               // scale is fluid via CSS var, but iframe size fixed
             }}
-            className="block [--scale:calc(100%/1440*var(--cardw,800))]"
+            className="block"
           />
         </div>
       )}
